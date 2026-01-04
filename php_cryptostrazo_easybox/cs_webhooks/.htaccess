@@ -1,0 +1,13 @@
+Options -Indexes
+Options -MultiViews
+
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "^(README\.md|SECURITY\.md|INSTALL\.md|ROOT_HTACCESS_SNIPPET\.txt|\.env.*)$">
+  Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteRule ^(config|src|storage|schema)(/|$) - [F,L]

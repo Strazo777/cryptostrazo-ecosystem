@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS strz_webhook_inbox (
+  id                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  delivery_uid      VARCHAR(80)     NOT NULL,
+  event             VARCHAR(80)     NULL,
+  received_at       TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  payload_json      LONGTEXT        NOT NULL,
+
+  invoice_id        BIGINT          NULL,
+  invoice_public_id VARCHAR(64)     NULL,
+  external_id       VARCHAR(128)    NULL,
+  kind              VARCHAR(32)     NULL,
+  status            VARCHAR(32)     NULL,
+  amount_base       VARCHAR(32)     NULL,
+  amount_total      VARCHAR(32)     NULL,
+  currency          VARCHAR(32)     NULL,
+  wallet_address    VARCHAR(128)    NULL,
+  network           VARCHAR(32)     NULL,
+  tx_id             VARCHAR(128)    NULL,
+  paid_at           VARCHAR(40)     NULL,
+  expires_at        VARCHAR(40)     NULL,
+  created_at        VARCHAR(40)     NULL,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_delivery_uid (delivery_uid),
+  KEY idx_event_received (event, received_at),
+  KEY idx_external_id (external_id),
+  KEY idx_invoice_public_id (invoice_public_id),
+  KEY idx_tx_id (tx_id),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

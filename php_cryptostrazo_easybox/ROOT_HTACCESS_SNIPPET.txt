@@ -1,0 +1,12 @@
+# ---- CryptoStrazo webhooks (isolated, does NOT affect other site routes) ----
+RewriteEngine On
+
+# 1) Block direct access to internal folder by URL
+RewriteRule ^cs_webhooks(/|$) - [F,L]
+
+# 2) Publish ONLY the webhook endpoint (clean URL in site root)
+RewriteRule ^webhooks/cryptostrazo/?$ cs_webhooks/public/index.php [L,QSA]
+
+# 3) Optional debug endpoint (enable only when needed)
+# RewriteRule ^webhooks/cryptostrazo/last/?$ cs_webhooks/public/index.php [L,QSA]
+# ---- end ----
