@@ -10,15 +10,17 @@ declare(strict_types=1);
  */
 return [
     // Optional: used only for diagnostics / matching (not required for signature itself)
-    'public_key' => 'public_key',
+    'public_key' => 'cs_public_...',
 
     // Required: HMAC secret used by CryptoStrazo to sign webhooks
-    'secret' => 'secret',
+    'secret' => 'cs_secret_...',
 
     // Anti-replay window (seconds). Default 300 = 5 minutes.
-    'max_drift_seconds' => 300,
+    'max_drift_seconds' => 86400,
 
-    // Headers (must match the sender)
+    // Headers (must match the sender) — do not change unless necessary.
+    // Only modify if CryptoStrazo administrators explicitly announce a header name/format change.
+
     'delivery_header'   => 'X-STRZ-Delivery-Id',
     'timestamp_header'  => 'X-STRZ-Timestamp',
     'signature_header'  => 'X-STRZ-Signature',

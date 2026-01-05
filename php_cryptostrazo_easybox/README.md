@@ -87,6 +87,33 @@ Important:
 - you create the database and user in your hosting panel (or phpMyAdmin) **once**
 - the client creates/migrates the `strz_webhook_inbox` table automatically on the first request (auto-migrate)
 
+### Step C — Anti-replay window (`max_drift_seconds`) for retries
+
+The receiver validates `X-STRZ-Timestamp` and rejects webhooks that are **too old**.  
+This protects against replay attacks, but it also affects **retries**.
+
+Recommended workflow:
+
+1) **During setup / debugging**, temporarily increase the window so retries can still be accepted while you fix config/keys:
+   - e.g. `86400` (24 hours) or `604800` (7 days)
+
+2) **After you successfully receive the first webhook (or the first retry) and confirm everything works**, reduce it back to a strict value:
+   - recommended: `300` (5 minutes)
+
+Example:
+
+```php
+// Temporary for onboarding/debug (so retries don't expire by time)
+'max_drift_seconds' => 86400, // 24h
+
+// After everything works, switch to strict mode:
+'max_drift_seconds' => 300,   // 5 min (default)
+```
+
+Notes:
+- If your hosting queues/proxies can delay retries for a long time, you may keep a larger value (e.g. 1–24 hours).
+- If the server time on the client side is wrong (no NTP), you will see: `401 timestamp_out_of_range`.
+
 ---
 
 ## 4) Required: add a rule to the root `.htaccess` (does not break the site)
@@ -278,6 +305,6 @@ This prevents conflicts with CMS routing and with other modules.
 ## 13) Common errors
 
 - `401 bad_signature` — wrong secret or something modifies the raw body (proxy/module)
-- `401 timestamp_out_of_range` — incorrect server time (NTP not configured)
+- `401 timestamp_out_of_range` — incorrect server time (NTP not configured) or `max_drift_seconds` too strict for delayed retries
 - `500 storage_failed` — unable to write to DB (permissions/disk space/DSN)
 - `200 duplicate=true` — re-delivery (normal, webhooks are idempotent)
